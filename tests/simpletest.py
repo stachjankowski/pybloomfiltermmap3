@@ -384,6 +384,18 @@ class SimpleTestCase(unittest.TestCase):
         intersection = len(bf1) + len(bf2) - len(union_bf)
         assert intersection == 11  # approximate size
 
+    def test_remove(self):
+        bf = pybloomfilter.BloomFilter(100, 0.01)
+        for i in range(0, 20):
+            bf.add(str(i))
+
+        assert bf.remove("1")
+        assert "1" not in bf
+        assert "2" in bf
+        assert len(bf) == 19  # approximate size
+        assert not bf.remove("1")
+        assert not bf.remove("30")
+
 
 def suite():
     suite = unittest.TestSuite()

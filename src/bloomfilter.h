@@ -94,6 +94,35 @@ static inline int bloomfilter_Test(BloomFilter * bf, Key * key)
 __attribute__((always_inline))
 
 
+static inline int bloomfilter_Remove(BloomFilter * bf, Key * key)
+{
+    BTYPE (*hashfunc)(uint32_t, Key *) = _hash_char;
+    register BTYPE mod = bf->array->bits;
+    register int i;
+    register int result = 1;
+    register BTYPE hash_res;
+
+    if (key->shash == NULL)
+        hashfunc = _hash_long;
+
+    for (i = bf->num_hashes - 1; i >= 0; --i) {
+        hash_res = (*hashfunc)(bf->hash_seeds[i], key) % mod;
+
+        if (result && !mbarray_Test(bf->array, hash_res)) {
+            result = 0;
+        }
+        if (!mbarray_Clear(bf->array, hash_res)) {
+        } else {
+            return 2;
+        }
+    }
+
+    if (bf->count_correct) {
+        bf->elem_count --;
+    }
+    return result;
+}
+__attribute__((always_inline))
 
 
 #endif

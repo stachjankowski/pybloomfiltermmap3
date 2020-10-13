@@ -126,6 +126,15 @@ Instance Methods
     :param item: hashable object
     :rtype: bool
 
+.. method:: BloomFilter.remove(item)
+
+    Removes an item from the Bloom filter.
+    Returns a boolean indicating whether this item was present
+    in the Bloom filter prior to removing (see :meth:`BloomFilter.__contains__`).
+
+    :param item: hashable object
+    :rtype: bool
+
 .. method:: Bloomilter.clear_all()
 
     Removes all elements from the Bloom filter at once.

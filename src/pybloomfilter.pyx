@@ -406,6 +406,31 @@ cdef class BloomFilter:
         for item in iterable:
             self.add(item)
 
+    def remove(self, item_):
+        """Removes an item from the Bloom filter. Returns a boolean indicating whether
+        this item was present in the Bloom filter prior to removing
+        (see :meth:`BloomFilter.__contains__`).
+
+        :param item: hashable object
+        :rtype: bool
+        """
+        self._assert_open()
+        self._assert_writable()
+        cdef cbloomfilter.Key key
+        if isinstance(item_, str):
+            item = item_.encode()
+            key.shash = item
+            key.nhash = len(item)
+        else:
+            item = item_
+            key.shash = NULL
+            key.nhash = hash(item)
+
+        result = cbloomfilter.bloomfilter_Remove(self._bf, &key)
+        if result == 2:
+            raise RuntimeError("Some problem occured while trying to remove key.")
+        return bool(result)
+
     def __len__(self):
         """Returns the number of distinct elements that have been
         added to the :class:`BloomFilter` object, subject to the error

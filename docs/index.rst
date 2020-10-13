@@ -25,8 +25,12 @@ Here's a quick example:
     >>>     for word in f:
     >>>         bf.add(word.rstrip())
 
-    >>> print 'apple' in bf
+    >>> print('apple' in bf)
     True
+
+    >>> bf.remove('apple')
+    >>> print('apple' in bf)
+    False
 
 That wasn't so hard, was it? Now, there are a lot of other things we can do.
 For instance, let's say we want to create a similar filter with just a few pieces of fruit:
